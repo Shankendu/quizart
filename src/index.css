@@ -1,0 +1,9 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@custom-variant dark (&:where(.dark, .dark *));
+@import "tailwindcss";
+
+@theme {
+  --font-archivo: "Archivo Black", serif;
+  --font-ibm: "IBM Plex Sans", serif;
+}
