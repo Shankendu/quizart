@@ -26,7 +26,7 @@ Quizart is built using React.js with Tailwind CSS for styling. It features Index
 
 ## 🌍 Deployed Link
 
-🔗 [Live Demo](your-deployed-link-here)
+🔗 [Live Demo](https://quizart-delta.vercel.app/)
 
 
 ## ⚙️ Installation
