@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { integer } from "../data/data.js";
 import { QuizContext } from "../context/QuizContext.jsx";
+import { get, set } from "idb-keyval";
 
 const Integer = () => {
-    //States
+  //States
   const [timeLeft, setTimeLeft] = useState(30);
   const [input, setInput] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -17,61 +18,83 @@ const Integer = () => {
     intFeedback,
     setIntFeedback,
     setIntScore,
-    setActiveTab
+    setActiveTab,
+    db,
+    setHistory,
+    mcqScore,
+    intScore,
+    username,
+    history,
   } = useContext(QuizContext);
 
-//Function to submit answer
+  //Function to submit answer
   const submitAnswer = () => {
-    if (input.trim() === "") {                                      // Check if the input is empty
-      return;                                                       // If it is, do nothing
+    if (input.trim() === "") {
+      // Check if the input is empty
+      return; // If it is, do nothing
     }
-    if (parseInt(input) === integer[currentIntQuestion].answer) {   // Check if the answer is correct
-      setIntScore((prev) => prev + 1);                                 // Increment the score by 1
+    if (parseInt(input) === integer[currentIntQuestion].answer) {
+      // Check if the answer is correct
+      setIntScore((prev) => prev + 1); // Increment the score by 1
     }
-    const newIntAnswer = [...intAnswer];                            // Create a copy of the answer array
-    const newIntFeedback = [...intFeedback];                        // Create a copy of the feedback array
-    newIntAnswer[currentIntQuestion] = input;                       // Add the input to the answer array
-    setIntAnswer(newIntAnswer);                                     // Update the answer array
-    integer[currentIntQuestion].answer === parseInt(input)          // Check if the answer is correct
-      ? (newIntFeedback[currentIntQuestion] = "Correct")            // Update the feedback array to "Correct"
-      : (newIntFeedback[currentIntQuestion] = "Incorrect");         // Update the feedback array to "Incorrect"
-    setIntFeedback(newIntFeedback);                                 //Update the feedback array
-    setIsSubmitted(true);                                           // Disable input
+    const newIntAnswer = [...intAnswer]; // Create a copy of the answer array
+    const newIntFeedback = [...intFeedback]; // Create a copy of the feedback array
+    newIntAnswer[currentIntQuestion] = input; // Add the input to the answer array
+    setIntAnswer(newIntAnswer); // Update the answer array
+    integer[currentIntQuestion].answer === parseInt(input) // Check if the answer is correct
+      ? (newIntFeedback[currentIntQuestion] = "Correct") // Update the feedback array to "Correct"
+      : (newIntFeedback[currentIntQuestion] = "Incorrect"); // Update the feedback array to "Incorrect"
+    setIntFeedback(newIntFeedback); //Update the feedback array
+    setIsSubmitted(true);
   };
 
   //Fetching saved answer
   useEffect(() => {
-    const savedAnswer = intAnswer[currentIntQuestion] || "";    // Get the saved answer
-    setInput(savedAnswer);                                      // Set the input
-    setIsSubmitted(savedAnswer !== "");                         // If there's an answer, disable input
+    const savedAnswer = intAnswer[currentIntQuestion] || ""; // Get the saved answer
+    setInput(savedAnswer); // Set the input
+    setIsSubmitted(savedAnswer !== ""); // If there's an answer, disable input
   }, [currentIntQuestion, intAnswer]);
 
   //Timer
   useEffect(() => {
-    if (timeLeft === 0) {               // Check if the timer has reached 0
-      handleNext();                     // Move to the next question  if the timer has reached 0
+    if (timeLeft === 0) {
+      // Check if the timer has reached 0
+      handleNext(); // Move to the next question  if the timer has reached 0
     }
-    if(timeLeft === 0 && currentIntQuestion === integer.length - 1){   // Check if the timer has reached 0 for the last question
-        setActiveTab(2);                                               // Move to the result tab
+    if (timeLeft === 0 && currentIntQuestion === integer.length - 1) {
+      // Check if the timer has reached 0 for the last question
+      setActiveTab(2); // Move to the result tab
     }
-    const timer = setInterval(() => {   // Start the timer
-      setTimeLeft((prev) => prev - 1 );  // Decrement the timer by 1 second
-    }, 1000);           
-    return () => clearInterval(timer);  // Clean up the timer
-  }, [timeLeft]);                       
+    const timer = setInterval(() => {
+      // Start the timer
+      setTimeLeft((prev) => prev - 1); // Decrement the timer by 1 second
+    }, 1000);
+    return () => clearInterval(timer); // Clean up the timer
+  }, [timeLeft]);
 
   //Function to handle next question
   const handleNext = () => {
-    if (currentIntQuestion < integer.length - 1) {  // Check if there are more questions
-      setCurrentIntQuestion((prev) => prev + 1);    // Move to the next question
-      setTimeLeft(30);                              // Reset the timer
-    }else{
-        setActiveTab(2);
+    if (currentIntQuestion < integer.length - 1) {
+      // Check if there are more questions
+      setCurrentIntQuestion((prev) => prev + 1); // Move to the next question
+      setTimeLeft(30); // Reset the timer
+    } else {
+      setActiveTab(2);
+      const newHistory = [
+        ...history,
+        {
+          username,
+          score: mcqScore + intScore,
+          date: new Date().toLocaleString(),
+        },
+      ];
+      set("attempt", newHistory, db);
+      setHistory(newHistory);
     }
   };
   return (
     <div className="p-5 sm:p-10 flex flex-col items-center justify-center font-ibm">
-    {/* Section for Time and Question Number */}
+      {/* Section for Time and Question Number */}
       <div className="flex justify-between w-full items-center text-sm sm:text-base">
         <p>
           Question: {currentIntQuestion + 1}/{integer.length}

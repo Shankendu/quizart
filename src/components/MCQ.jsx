@@ -3,7 +3,7 @@ import { mcq } from "../data/data.js";
 import { QuizContext } from "../context/QuizContext";
 
 const MCQ = () => {
-    //Context
+  //Context
   const {
     setActiveTab,
     setMcqScore,
@@ -38,7 +38,7 @@ const MCQ = () => {
       setActiveTab(1);
     }
   };
- 
+
   //Function to handle answer
   const handleAnswer = (answer) => {
     const newSelectedAnswer = [...selectMCQAnswer];
@@ -57,7 +57,7 @@ const MCQ = () => {
   };
   return (
     <div className="p-5 sm:p-10 flex flex-col items-center justify-center font-ibm">
-    {/* Section for timer and question number */}
+      {/* Section for timer and question number */}
       <div className="flex justify-between w-full items-center">
         <p>
           Question: {currentQuestion + 1}/{mcq.length}

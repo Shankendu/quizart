@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { QuizContext } from "../context/QuizContext";
 
+
 const Quiz = () => {
   const {
     tabs,
@@ -57,7 +58,7 @@ const Quiz = () => {
             </p>
           ))}
         </div>
-        <div className={`w-[100%] border-2 border-black dark:border-white rounded-tr-lg rounded-b-lg bg-[#FFDD67] dark:bg-[#1E1E1E] [box-shadow:5px_5px_0px_#000000] dark:[box-shadow:5px_5px_0px_#FFFFFF] ${activeTab === 2 ? "rounded-lg p-10 " : ""}`}>
+        <div className={`w-[100%] border-2 border-black dark:border-white rounded-tr-lg rounded-b-lg bg-[#FFDD67] dark:bg-[#1E1E1E] [box-shadow:5px_5px_0px_#000000] dark:[box-shadow:5px_5px_0px_#FFFFFF] ${activeTab === 2 ? "rounded-lg " : ""}`}>
           <ActiveComponent />
         </div>
       </div>
